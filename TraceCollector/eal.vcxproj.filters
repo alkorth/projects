@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="eal.cpp">
+    <ClCompile Include="TraceCollector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="etw.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="eal.h">
+    <ClInclude Include="TraceCollector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

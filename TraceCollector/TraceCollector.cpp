@@ -1,11 +1,11 @@
-// eal.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// TraceCollector.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include <windows.h>
 #include <stdio.h>
 #include <evntrace.h>
 #include <string>
-#include "eal.h"
+#include "TraceCollector.h"
 
 // {86BC8F33-8ABE-4CD0-BE25-1CE666238EFA}
 static const GUID ealSessionGuid =
@@ -44,7 +44,7 @@ static const GUID ealRecordingGuid[] = {
     //{ 0x9E814AAD, 0x3204, 0x11D2, { 0x9a, 0x82, 0x00, 0x60, 0x08, 0xa8, 0x69, 0x39 } },
 };
 
-static const wchar_t* sessionName { L"Recording session" };
+static const wchar_t* sessionName { L"Trace collector recording session" };
 
 int wmain( int argc, const wchar_t** argv )
 {

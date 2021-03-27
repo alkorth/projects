@@ -156,11 +156,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="eal.cpp" />
+    <ClCompile Include="TraceCollector.cpp" />
     <ClCompile Include="etw.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="eal.h" />
+    <ClInclude Include="TraceCollector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

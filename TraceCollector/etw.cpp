@@ -5,7 +5,7 @@
 #include <wmistr.h>
 #include <evntrace.h>
 #include <string>
-#include "eal.h"
+#include "TraceCollector.h"
 
 #pragma comment(lib, "advapi32.lib")
 
@@ -94,7 +94,6 @@ HRESULT CloseSystemLogSession( _In_ const wchar_t* logPath )
 HRESULT CreateSystemLogSession( _In_ const wchar_t* logPath )
 {
     ULONG status = ERROR_SUCCESS;
-    //TRACEHANDLE SessionHandle = 0;
     EVENT_TRACE_PROPERTIES* pSessionProperties = NULL;
     ULONG BufferSize = 0;
     HRESULT hResult = S_OK;
@@ -227,7 +226,6 @@ HRESULT DestroyLoggingSession( HANDLE SessionHandle, const wchar_t* SessionName,
 
             if ( ERROR_SUCCESS != status )
             {
-                //wprintf( L"ControlTrace(stop) failed with %lu\n", status );
                 hResult = HRESULT_FROM_WIN32( status );
             }
         }
@@ -291,7 +289,6 @@ HRESULT CreateLoggingSession( const wchar_t* SessionName, const GUID& SessionGui
     status = StartTrace( (PTRACEHANDLE)&SessionHandle, SessionName, pSessionProperties );
     if ( ERROR_SUCCESS != status )
     {
-        //wprintf( L"StartTrace() failed with %lu\n", status );
         hResult = HRESULT_FROM_WIN32( status );
         goto cleanup;
     }
@@ -312,14 +309,11 @@ HRESULT CreateLoggingSession( const wchar_t* SessionName, const GUID& SessionGui
 
         if ( ERROR_SUCCESS != status )
         {
-            //wprintf( L"EnableTrace() failed with %lu\n", status );
-            //TraceOn = FALSE;
             hResult = HRESULT_FROM_WIN32( status );
             goto cleanup;
         }
     }
-    //wprintf( L"Run the provider application. Then hit any key to stop the session.\n" );
-    //_getch();
+
     SessionOutHandle = (HANDLE)SessionHandle;
     hResult = CreateSystemLogSession( OutputFile );
     if ( hResult != S_OK )

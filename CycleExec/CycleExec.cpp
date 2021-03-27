@@ -1,4 +1,4 @@
-// pwsexec.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// cycleexec.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include <windows.h>
@@ -159,7 +159,7 @@ HRESULT PrepareExecutionScript( const wchar_t* exe_name, const wchar_t* out )
 }
 int wmain(int argc, const wchar_t** argv)
 {
-    printf( "\nPWSExec v1.0\n" );
+    printf( "\nCycleExec v1.0\n" );
     // declaring argument of time()
     time_t my_time = time( NULL );
 
