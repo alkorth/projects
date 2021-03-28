@@ -12,6 +12,9 @@
 
 using namespace std;
 
+wstring powerShellPath = L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe";
+wstring powerShellPolicy = L" Set - ExecutionPolicy RemoteSigned";
+
 HRESULT Execute( const wchar_t* process, const wchar_t* arg )
 {
     HRESULT result { S_OK };
@@ -34,7 +37,8 @@ HRESULT Execute( const wchar_t* process, const wchar_t* arg )
 
 HRESULT ExecutionCycle()
 {
-    auto ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe Set-ExecutionPolicy RemoteSigned" );
+    auto fullPowerShellPolicyString = powerShellPath + powerShellPolicy;
+    auto ret_code = Execute(powerShellPath.c_str(), fullPowerShellPolicyString.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS configuration failed with %x error\n", ret_code );
@@ -42,7 +46,7 @@ HRESULT ExecutionCycle()
     }
 
     // start the VM
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmstart.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmstart.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM start failed with %x error\n", ret_code );
@@ -53,7 +57,7 @@ HRESULT ExecutionCycle()
     ::SleepEx( 60000, FALSE );
 
     // stop the VM
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmstop.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmstop.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -61,7 +65,7 @@ HRESULT ExecutionCycle()
     }
 
     // Mount VM volume
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hdmount.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hdmount.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -69,7 +73,7 @@ HRESULT ExecutionCycle()
     }
 
     // Copy results
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\copyresults.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\copyresults.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -77,7 +81,7 @@ HRESULT ExecutionCycle()
     }
 
     // UnMount VM volume
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hddismount.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hddismount.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -85,7 +89,7 @@ HRESULT ExecutionCycle()
     }
 
     // Revert VM
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmrevert.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\vmrevert.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -97,14 +101,14 @@ HRESULT ExecutionCycle()
 
 HRESULT PrepareExecutionScript( const wchar_t* exe_name, const wchar_t* out )
 {
-    auto ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe Set-ExecutionPolicy RemoteSigned" );
+    auto ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe Set-ExecutionPolicy RemoteSigned" );
     if ( ret_code != S_OK )
     {
         printf( "PS configuration failed with %x error\n", ret_code );
         return ret_code;
     }
     // Mount VM volume
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hdmount.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hdmount.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -140,7 +144,7 @@ HRESULT PrepareExecutionScript( const wchar_t* exe_name, const wchar_t* out )
             *(wchar_t*)ptr = 0;
         }
 
-        wsprintf( buffer, L"t:\\scripts\\eal \"%s\" 120000 t:\\data\\%s.etl >> t:\\data\\%s.log\n", exe_name, copy, copy );
+        wsprintf( buffer, L"t:\\scripts\\tracecollector \"%s\" 120000 t:\\data\\%s.etl >> t:\\data\\%s.log\n", exe_name, copy, copy );
         fputws( buffer, ofile );
         fputws( L"timeout /t 5\n", ofile );
 
@@ -148,7 +152,7 @@ HRESULT PrepareExecutionScript( const wchar_t* exe_name, const wchar_t* out )
         fclose( ofile );
     }
     // UnMount VM volume
-    ret_code = Execute( L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe", L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hddismount.ps1" );
+    ret_code = Execute(powerShellPath.c_str(), L"c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe -f d:\\dataset\\scripts\\hddismount.ps1" );
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -159,15 +163,15 @@ HRESULT PrepareExecutionScript( const wchar_t* exe_name, const wchar_t* out )
 }
 int wmain(int argc, const wchar_t** argv)
 {
-    printf( "\nCycleExec v1.0\n" );
+    printf( "\nCycleExec v1.1\n" );
     // declaring argument of time()
     time_t my_time = time( NULL );
 
     char buffer [MAX_PATH];
 
-    if ( argc != 2 )
+    if ( argc != 3 )
     {
-        printf( "Expected input file with parameters\n" );
+        printf( "Format: %S <samples path aggregated file> <configuration file>\n", argv[0] );
         return 1;
     }
 
