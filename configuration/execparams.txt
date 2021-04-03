@@ -1,0 +1,9 @@
+powershellpath =c:\windows\system32\WindowsPowerShell\v1.0\powershell.exe
+powershellstartscript = d:\dataset\scripts\vmstart.ps1
+powershellstopscript=d:\dataset\scripts\vmstop.ps1
+powershellmountscript=d:\dataset\scripts\hdmount.ps1
+powershellrevertscript=d:\dataset\scripts\vmrevert.ps1
+powershelldismountscript=d:\dataset\scripts\hddismount.ps1
+powershellcopyresultsscript=d:\dataset\scripts\copyresults.ps1
+tracecollectortemplate=t:\scripts\tracecollector \"%s\" 120000 t:\data\%s.etl >> t:\data\%s.log\n
+outputbatchfilepath=f:\data\onerun.bat

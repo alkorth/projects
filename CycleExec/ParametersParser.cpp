@@ -51,7 +51,7 @@ wstring NormalizeString(_In_ const wchar_t* input)
             head++;
         }
         wchar_t* tail = (wchar_t*)input;
-        tail += size - 1;
+        tail += size-1;
         while (tail != head)
         {
             if ((*tail != ' ') && ( ( *tail != '\n' ) ))
@@ -59,9 +59,10 @@ wstring NormalizeString(_In_ const wchar_t* input)
                 break;
             }
             tail--;
+            size--;
         }
         result = head;
-        result.resize(tail - head);
+        result.resize(size);
         ToLower(result);
     }
     return result;
