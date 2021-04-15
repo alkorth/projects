@@ -1,2 +1,8 @@
 Write-Host "Stops VM execution automation"
-Stop-VM -Name 'Win81x86' -Save
+if (1 -ne $args.count)
+{
+	Write-Error "FATAL: expected HDD name argument" -ErrorAction Stop
+}
+$VMName = $args[0]
+
+Stop-VM -Name $VMName -Save

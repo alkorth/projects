@@ -27,7 +27,17 @@ shared_ptr<wstring> powerShellMountScript = make_shared<wstring>(L"d:\\dataset\\
 shared_ptr<wstring> powerShellRevertScript = make_shared<wstring>(L"d:\\dataset\\scripts\\vmrevert.ps1");
 shared_ptr<wstring> powerShellDisMountScript = make_shared<wstring>(L"d:\\dataset\\scripts\\hddismount.ps1");
 shared_ptr<wstring> powerShellCopyResultsScript = make_shared<wstring>(L"d:\\dataset\\scripts\\copyresults.ps1");
+//
+// Power shell scripts arguments
+//
 
+shared_ptr<wstring> powerShellVMName = make_shared<wstring>(L"Win81x86");
+shared_ptr<wstring> powerShellVMHddFolderPath = make_shared<wstring>(L"d:\\Users\\Public\\Documents\\Hyper-V\\Virtual Hard Disks");
+shared_ptr<wstring> powerShellVMHddPath = make_shared<wstring>(L"d:\\Users\\Public\\Documents\\Hyper-V\\Virtual Hard Disks\\vhd3.vhd");
+shared_ptr<wstring> powerShellVMPostTestLabel = make_shared<wstring>(L"AV test ready");
+shared_ptr<wstring> powerShellVMTestStartLabel = make_shared<wstring>(L"TestReady");
+shared_ptr<wstring> powerShellMappedFolderPath = make_shared<wstring>(L"f:\\data");
+shared_ptr<wstring> powerShellDestinationFolderPath = make_shared<wstring>(L"d:\\data\\avcollect");
 //
 // Trace collector execution template
 //
@@ -57,7 +67,18 @@ vector < pair<wstring, shared_ptr<wstring>>> totalParametersCollection = { make_
     , make_pair<>(L"powershelldismountscript", powerShellDisMountScript)
     , make_pair<>(L"powershellcopyresultsscript", powerShellCopyResultsScript)
     , make_pair<>(L"tracecollectortemplate", traceCollectorTemplate)
-    , make_pair<>(L"outputbatchfilepath", outputBatchFilePath) };
+    , make_pair<>(L"outputbatchfilepath", outputBatchFilePath)
+    //
+    // Power shell scripts arguments
+    //
+    , make_pair<>(L"powershellvmname", powerShellVMName)
+    , make_pair<>(L"powershellvmhddfolderpath", powerShellVMHddFolderPath)
+    , make_pair<>(L"powershellvmhddpath", powerShellVMHddPath)
+    , make_pair<>(L"powershellvmposttestlabel", powerShellVMPostTestLabel)
+    , make_pair<>(L"powershellvmteststartlabel", powerShellVMTestStartLabel)
+    , make_pair<>(L"powershellmappedfolderpath", powerShellMappedFolderPath)
+    , make_pair<>(L"powershelldestinationfolderpath", powerShellDestinationFolderPath)
+};
 
 //
 // Forward declarations
@@ -124,7 +145,9 @@ HRESULT ExecutionCycle()
     }
 
     // start the VM
-    ret_code = Execute(powerShellPath->c_str(), powerShellStartScript->c_str());
+    wstring separator = L" ";
+    wstring completePowerShellCommand = *powerShellStartScript + separator + *powerShellVMName;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM start failed with %x error\n", ret_code );
@@ -135,7 +158,8 @@ HRESULT ExecutionCycle()
     ::SleepEx( 60000, FALSE );
 
     // stop the VM
-    ret_code = Execute(powerShellPath->c_str(), powerShellStopScript->c_str());
+    completePowerShellCommand = *powerShellStopScript + separator + *powerShellVMName;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -143,7 +167,8 @@ HRESULT ExecutionCycle()
     }
 
     // Mount VM volume
-    ret_code = Execute(powerShellPath->c_str(), powerShellMountScript->c_str());
+    completePowerShellCommand = *powerShellMountScript + separator + *powerShellVMHddFolderPath;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -151,7 +176,8 @@ HRESULT ExecutionCycle()
     }
 
     // Copy results
-    ret_code = Execute(powerShellPath->c_str(), powerShellCopyResultsScript->c_str());
+    completePowerShellCommand = *powerShellCopyResultsScript + separator + *powerShellMappedFolderPath + separator + *powerShellDestinationFolderPath;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -159,7 +185,8 @@ HRESULT ExecutionCycle()
     }
 
     // UnMount VM volume
-    ret_code = Execute(powerShellPath->c_str(), powerShellDisMountScript->c_str());
+    completePowerShellCommand = *powerShellDisMountScript + separator + *powerShellVMHddFolderPath;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -167,7 +194,8 @@ HRESULT ExecutionCycle()
     }
 
     // Revert VM
-    ret_code = Execute(powerShellPath->c_str(), powerShellRevertScript->c_str());
+    completePowerShellCommand = *powerShellRevertScript + separator + *powerShellVMName + separator + *powerShellVMTestStartLabel;
+    ret_code = Execute(powerShellPath->c_str(), completePowerShellCommand.c_str());
     if ( ret_code != S_OK )
     {
         printf( "PS VM stop failed with %x error\n", ret_code );
@@ -266,6 +294,12 @@ int wmain(int argc, const wchar_t** argv)
         printf("\tpowershellcopyresultsscript - fully qualified path to power shell script to copy test results from mounted VM HDD\n");
         printf("\ttracecollectortemplate - template string used within auto generated execution script to create trace collector command line\n");
         printf("\toutputbatchfilepath - fully qualified path to location where the auto generated batch file should be stored\n");
+        printf("\tpowershellvmname - name of preconfigured VM to be used in test runs\n");
+        printf("\tpowershellvmhddfolderpath - fully qualified path to location where VM HDD images are stored\n");
+        printf("\tpowershellvmhddpath - fully qualified path to location where the specific HDD image used to store test execution data placed, includes the image name itself\n");
+        printf("\tpowershellvmteststartlabel - Name of VM snapshot label taken in powered off state from the preconfigured VM before any test execution started\n");
+        printf("\tpowershellmappedfolderpath - fully qualified path to mapped folder location which stores test results (on mapped VM HDD)\n");
+        printf("\tpowershelldestinationfolderpath - fully qualified path to location where all collected test results will be aggregated\n");
         return 1;
     }
 

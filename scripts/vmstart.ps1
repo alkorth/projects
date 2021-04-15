@@ -1,2 +1,8 @@
 Write-Host "Starts VM execution automation"
-Start-VM -Name 'Win81x86'
+if (1 -ne $args.count)
+{
+	Write-Error "FATAL: expected HDD name argument" -ErrorAction Stop
+}
+$VMName = $args[0]
+
+Start-VM -Name $VMName
