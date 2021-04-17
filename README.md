@@ -12,7 +12,13 @@ The project contains 3 utilities:
 - CycleExec utility
   The helper utility used to automate process of collection of traces information from multiple samples(executables).
   Important work assumptions:
-  - Preconfigured Hyper-V VM exists, the VM configured to execute a batch file upon start
+  - Preconfigured Hyper-V VM exists, the VM configured to execute a batch file upon start (with autologon enabled)
+    = The VM configured without network access (to avoid C2C communications, etc.)
+    = The VM have no AV software (to avoid blocking of malware samples execution)
+    = The VM have 2 HDDs: system HDD and secondary HDD used to store malware samples. In continuation of the description each VM HDD reference will be related to 
+      the secondary HDD
+    = The VM have snapshot in powered down state prior to execution of any malware - the snapshot will be used to revert back VM
+      sate after each malware sample execytion cycle
   - The utility executes pre-created several power shell scripts for next goals:
     = Start VM
     = Stop VM
